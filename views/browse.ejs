@@ -1,0 +1,75 @@
+<%  include partials/header%>
+<% include partials/menu%>
+
+<div id="header" class="container-fluid">
+	<div class="row">
+		<div class="col-sm-4">
+			<% if (users) {%>
+  			<% users.forEach(function (user){%>
+  			<div class="card" style="width:200px">
+  				<% if (user.profile.p_pic) {%>
+	  			<img class="card-img-top" src="<%= user.profile.p_pic %>" alt="Card image" > 
+	  			<%} else {%>
+	  			<img class="card-img-top" src="<%='/images/nopic.gif' %>" alt="Card image" >
+	  			<%}%>
+	  			<div class="card-body">
+	    		<h4 class="card-title"><%= user.first_name%></h4>
+	    		<class="card-text">
+	    		<% if (user.profile.bio) {%>
+	    			<%= user.profile.bio%>
+	    			<%= user.famerating%>
+	    			<%= user.ipapi.city %>
+	    			<%= user.profile.gender%>
+	    			<%= user.profile.age%>
+	    		<%}%>
+	    		</p>
+	    
+	    		<button class="btn btn-primary" onclick="viewprofile('<%=user._id%>','<%=user.first_name%>')">View</button>
+
+	  			</div>
+			</div>
+  			<%})%>
+  			<%}%>
+		</div>
+		<div class="col-md-4">
+		<form method="post" action="/filter">
+			<div>
+				<p>Filter By :</p>
+			<label>Age</label>
+				<select class="form-control" name="age">
+					<option>18 - 25</option>
+					<option>25 - 35</option>
+					<option>35 -> </option>
+				</select>
+			<br>
+			<label>Location : </label>
+			<%if (details.gps_lat) {%>
+				<select class="form-control" name="location" >
+					<option><%= details.ipapi.city %></option>
+					<option><%= details.ipapi.region%></option>
+					<option><%= details.ipapi.country%></option>
+				</select>
+			<%} else {%>
+			<a href="/profile"><%='input your gps location to you use this feature' %></a> 
+			<%} %>
+			<label for="interests"> Interests : (e.g #matcha #javascript #love...)</label>
+      <% if (details.profile.interests) {%>
+  
+    <textarea name="interests" id="interests" class="form-control" placeholder="what are your interests? preceed each with '#' e.g #matcha"><% details.profile.interests.forEach(function (inters){%><%= '#'+inters+' ' %><%})%></textarea>
+
+  <%} else {%>
+      <textarea name="interests" id="interests" class="form-control" placeholder="what are your interests? preceed each with '#' e.g #matcha"><%='' %></textarea>
+  <%}%>
+			<br>
+			<label>fame rating (greater than or equals):</label>
+				<input class="form-control" type="number" name="famerating" min="1" value="1">
+			</div>
+			<br>
+			<button type="submit" class="form-control"  name="sumbit">Filter </button>
+		</form>	
+		</div>
+	</div>
+</div>
+
+<% include partials/footer %>
+<script type="text/javascript" src="/js/browse.js"></script>

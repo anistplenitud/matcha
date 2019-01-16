@@ -1,0 +1,24 @@
+<form action="/users/login" method="POST">
+
+          <div class="form-group">
+
+          <div class="form-group">
+            <label for="email">Email address:</label>
+            <input type="email" class="form-control" id="email" name="email" required autocomplete>
+          </div>
+
+          <div class="form-group">
+            <label for="pwd">Password:</label>
+            <input type="password" class="form-control" id="pwd" name="password" required autocomplete>
+          </div>
+
+          </div>
+          <input type="log in" class="btn btn-primary" name="submit" value="Log In" onclick="login()">
+</form>
+<div id="login_result"></div>
+<div>
+  <a href="/forgotpassword">forgot password</a>
+</div>
+
+
+<script type="text/javascript" src="/js/login.js"></script>

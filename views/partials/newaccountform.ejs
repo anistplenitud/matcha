@@ -1,0 +1,63 @@
+<div class="container mt-3">
+  <h2>Create a foster Account</h2>
+  <p>Create a foster account using your email.</p>
+  
+  <!-- Button to Open the Modal -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+    Create Account
+  </button>
+
+  <!-- The Modal -->
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Create Account</h4>
+          <button type="button" class="close" data-dismiss="modal">×</button>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+          <form action="/users/add" method="POST" onsubmit="return validateForm()">
+
+          <div class="form-group">
+            <label for="first_name">First Name:</label>
+            <input type="text" class="form-control" id="first_name" name="first_name" autocomplete required>
+          </div>
+
+          <div class="form-group">
+            <label for="first_name">Last Name:</label>
+            <input type="text" class="form-control" id="last_name" name="last_name" autocomplete required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email address:</label>
+            <input type="email" class="form-control" id="email_r" name="email" autocomplete required>
+          </div>
+
+          <div class="form-group">
+            <label for="pwd">Password:</label>
+            <input type="password" class="form-control" id="pwd_r" name="password" autocomplete required>
+          </div>
+
+          <div class="form-group">
+            <label for="pwd_v">Confirm Password:</label>
+            <input type="password" class="form-control" id="pwd_vr" name="password_v" autocomplete>
+          </div>
+
+          <input type="submit" class="btn btn-primary" name="submit" value="Create Account">
+      </form>
+        </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
+</div>

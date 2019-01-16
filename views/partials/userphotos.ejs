@@ -1,0 +1,59 @@
+<div class="col-lg-4">
+	
+	  <div class="flex-row">
+	  	<div class="p-2">
+	  		<p><strong>Profile Picture</strong></p>
+	  		<% if (details.profile.p_pic) {%> 
+	  		<img src="<%= details.profile.p_pic%>" class="img-thumbnail" alt="p_pic" width="150">
+	  		<%} else {%>
+	  		<img src="<%= '/images/nopic.gif'%>" class="img-thumbnail" alt="p_pic" width="150">
+	  		<%}%>
+	  	</div>
+
+	  	<div class="p-2">
+	  	<form action="/savep_pic" method="post" encType="multipart/form-data">
+
+	  		<input type="file" name="p_pic" accept="image/jpg,image/png"  class="form-control" />
+
+	  		<input type="submit" class="btn btn-primary" name="savepic" value="savepic">	
+	  	</form> 
+		
+	  	</div>
+	  	
+	  	
+	  </div>
+
+	  
+	  <div>
+
+	  	<p><strong>Display Photo</strong></p>
+
+
+	  <% if (details.profile.photos[0]) {%>
+	  <img src="<%= details.profile.photos[0]%>" class="img-thumbnail" alt="Cinque Terre" width="150">
+	  <%} else {%>
+	  		<img src="<%= '/images/nopic.gif'%>" class="img-thumbnail" alt="p_pic" width="150">
+	  <%}%>
+	   
+	  	<form action="/savedisplaypic" method="post" encType="multipart/form-data">
+
+	  		<input type="file" name="pic1" accept="image/jpg,image/png"  class="form-control" />
+
+	  		<input type="submit" class="btn btn-primary" name="savepic" value="savepic">	
+	  	</form> 
+		
+	  </div>
+	  	<p><strong>Display Photo</strong></p>            
+	  <% if (details.profile.photos[1]) {%>
+	  <img src="<%= details.profile.photos[1]%>" class="img-thumbnail" alt="Cinque Terre" width="150">
+	  <%} else {%>
+	  		<img src="<%= '/images/nopic.gif'%>" class="img-thumbnail" alt="p_pic" width="150">
+	  <%}%>	
+		<form action="/savedisplaypic1" method="post" encType="multipart/form-data">
+
+	  		<input type="file" name="pic2" accept="image/jpg,image/png"  class="form-control" />
+
+	  		<input type="submit" class="btn btn-primary" name="savepic" value="savepic">	
+	  	</form> 
+	  
+</div>

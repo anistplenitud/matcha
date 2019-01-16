@@ -1,0 +1,47 @@
+<% include partials/header %>
+<% include partials/menu%>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <p class="text-body">
+          <br>
+          Hey, If you haven't set up your <a class="text-success" href="/profile">profile</a> yet ... you should do that first so you can enjoy this site fully!
+          <br><br>
+          If you have click <a class="text-success"  href="/browse">here</a> to proceed
+      </p>
+      
+    </div>
+    
+  </div>
+  
+</div>
+</body>
+</html>
+<script type="text/javascript">
+
+var done = 0;
+
+if (done != 1 ) {
+  $.getJSON('https://ipapi.co/json/', function(data) {
+
+  console.log(JSON.stringify(data));
+
+
+   if (data) {
+    var xhttp = new XMLHttpRequest();
+
+   xhttp.open("POST", "/ipapi", true);
+   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+   xhttp.send("postal="+ data.postal
+              +"&country="+ data.country_name
+              +"&city="+data.city
+              +"&region="+data.region
+    );
+
+   } 
+  });
+ done = 1;
+}
+
+	
+</script>

@@ -1,0 +1,67 @@
+<% include partials/header%>
+<% include partials/menu%>
+<div id="header" class="container-fluid">
+	<div class="row">
+		<% include partials/profileform%>
+		<% include partials/userphotos%>
+		<% include partials/locationform%>
+	</div>
+	<div class="row">
+		<div class="col">
+			<h2>Modify Profile : </h2>
+			<% if (errors){ %>
+    <ul>
+      <% errors.forEach(function(error){ %>
+        <li><%= error.msg %></li>
+    <%  }) %>
+    </ul>
+  <%} %>
+			<form action="/modifyaccount" method="POST" onsubmit="return true;// validateForm()">
+				<label for="first_name">First Name:<%= details.first_name %></label>
+            	<input type="text" class="form-control" id="first_name" name="first_name" autocomplete required>
+            	<label for="first_name">Last Name:<%= details.last_name %></label>
+            	<input type="text" class="form-control" id="last_name" name="last_name" autocomplete required>
+            	<label for="email">Email address:  <small><i>(hidden)</i></small></label>
+
+            	<input type="email" class="form-control" id="email_r" name="email" autocomplete required>
+
+            	<label for="pwd">Password:</label>
+            <input type="password" class="form-control" id="pwd_r" name="password" title="Atleast 1 number, 1 cap, 8-16 length" autocomplete required>
+
+               <br>
+            <label for="confirmpwd">Confirm Password:</label>
+            <input type="password" class="form-control" id="confirmpwd" name="password_c" autocomplete required>
+
+            <br>
+            <label for="currentpwd">Enter Current Password:</label>
+            <input type="password" class="form-control" id="currentpwd" name="password_v" autocomplete required>
+
+            <input type="submit" class="btn btn-primary" name="submit" value="Modify Account">
+			</form>
+		</div>
+	</div>
+
+	<div>
+</div>
+<% include partials/footer%>
+<script type="text/javascript" src="/js/profile.js"></script>
+
+<script type="text/javascript">
+	function validateForm() {
+ 
+  function validatePass(pass) {
+    var re = /^.*(?=.{8,16})(?=.*\d)(?=.*[A-Z]).*$/;
+    return re.test(String(pass));
+    }
+  
+  var x = document.getElementById('pwd_r').value;
+  var c_x = document.getElementById('confirmpwd').value;
+
+  if ((!validatePass(x)) || (x != c_x))
+  {
+    alert("Password must contain : \natleast 1 number,\n1 CAPITAL LETTER, \n and must 8-16 chars long.");
+    return false;
+  }
+
+}
+</script>

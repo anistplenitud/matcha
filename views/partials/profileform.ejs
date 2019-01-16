@@ -1,0 +1,110 @@
+
+  <% if (errors) {%>
+  <% errors.forEach(function (error){%>
+  <li>
+  <%= error.elem %>
+  </li>
+  <%})%>
+  <%}%>
+  <div id="profileform" class="col-lg-4">
+
+    <form action="/profile" method="POST">
+  <div class="form-group">
+    <label for="gender">Gender:</label>
+      <select class="form-control" id="gender" name="gender">
+        <% if (details.profile.gender) {%>        
+        <option value="<%=details.profile.gender%>"><%=details.profile.gender%></option>
+        <%}%>
+        <% if (!details.profile.gender) {%>
+        <option value=""><%='Select Gender' %></option>
+        <%}%>
+        <option value="Straight Male">Straight Male</option>
+        <option value="Straight Female">Straight Female</option>
+        <option value="Openly Gay Male">Openly Gay Male</option>
+        <option value="Openly Gay Female">Openly Gay Female</option>
+        <option value="Non-specific Male">Non-specific Male</option>
+        <option value="Non-specific Female">Non-specific Female</option>
+        }
+    </select>
+
+    <div id="gender_e" class="alert alert-warning" style="display: none;">
+  <strong>Required!</strong> Which option best describes your gender?
+</div>
+  </div>
+
+    <label for="age"> Age :</label>
+    <% if (details.profile.age) {%>
+    <span>
+      <%=details.profile.age%>
+    </span>
+    <%}%>
+    <input id="age" type="number" name="age" class="form-control" min="18" required>
+
+    <div class="form-group">
+ 
+
+    <div id="age_e" class="alert alert-warning" style="display: none;">
+      <strong>Required!</strong> Please, tell us an estimate of your age?
+    </div>
+</div>
+
+
+  <div class="form-group form-check">
+    <label for="preferences">Sexuality Preferences:</label> <br>
+    <label class ="bg-info">Your current preference is recorded as :</label>
+  <% if (details.profile.preferences) {%>
+  <% details.profile.preferences.forEach(function (pref){%>
+  <span>
+  <%= pref %>
+  </span>
+  <%})%>
+  <%}%> 
+  <br>
+    <label class="form-check-label">
+      <input id="sm" class="form-check-input" type="checkbox" name="sm"> Straight Male (sm)</label> <br>
+    <label class="form-check-label">
+      <input id="sf" class="form-check-input" type="checkbox" name="sf"> Straight Female (sf)</label> <br>
+    <label class="form-check-label">
+      <input id="ogm" class="form-check-input" type="checkbox" name="ogm"> Openly Gay Male (ogm)</label> <br>
+    <label class="form-check-label">
+      <input id="ogf" class="form-check-input" type="checkbox" name="ogf"> Openly Gay Female (ogf)</label> <br>
+      <label class="form-check-label">
+      <input id="nsm" class="form-check-input" type="checkbox" name="nsm"> Non-Specific Male (nsm)</label> <br>
+      <label class="form-check-label">
+      <input id="nsf" class="form-check-input" type="checkbox" name="nsf"> Non-Specific Female (nsf)</label>
+<div id="pref_e" class="alert alert-warning" style="display: none;">
+  <strong>Required!</strong> Choose atleast one ...
+</div>
+  </div>
+
+  <div class="form-group">
+    <label for="bio"> Bio :</label>
+    <% if (details.profile.bio) {%>
+    <textarea name="bio" id="bio" class="form-control" placeholder="what is the most remarkable thing about you ?"><%=details.profile.bio%></textarea>
+      <% } else {%>
+      <textarea name="bio" id="bio" class="form-control" placeholder="what is the most remarkable thing about you ?"><%=''%></textarea>
+      <% }%>
+    
+    <div id="bio_e" class="alert alert-warning" style="display: none;">
+  <strong>Required!</strong> What woud like someone to know about you?
+</div>
+  </div>
+
+<div class="form-group"> 
+    <label for="interests"> Interests : (e.g #matcha #javascript #love...)</label>
+      <% if (details.profile.interests) {%>
+  
+    <textarea name="interests" id="interests" class="form-control" placeholder="what are your interests? preceed each with '#' e.g #matcha"><% details.profile.interests.forEach(function (inters){%><%= '#'+inters+' ' %><%})%></textarea>
+
+  <%} else {%>
+      <textarea name="interests" id="interests" class="form-control" placeholder="what are your interests? preceed each with '#' e.g #matcha"><%='' %></textarea>
+  <%}%>
+    <div id="interests_e" class="alert alert-warning" style="display: none;">
+  <strong>Required!</strong> Please, tell us your interests.
+</div>
+  </div>
+
+
+  <button type="button" class="btn btn-primary" onclick="saveprofile()">Save</button>
+</form>
+  </div>

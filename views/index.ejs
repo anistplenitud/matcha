@@ -1,0 +1,64 @@
+
+<% include partials/header %>
+<script>
+  var myconfig = <%- JSON.stringify(myconfig) %>;
+</script>
+
+<!-- script type="text/javascript" src="/js/facebookSDK.js"></script -->
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <span class="navbar-brand" href="#">
+      <img src="/images/image.png"" width="30" height="30" class="d-inline-block align-top" alt="">
+      foster
+      </span>
+</nav>
+<div id="header" class="container-fluid">
+
+
+      <% if (errors){ %>
+    <ul>
+      <% errors.forEach(function(error){ %>
+        <li><%= error.msg %></li>
+    <%  }) %>
+    </ul>
+  <%} %>
+
+  <% if (details) {%>
+  <% include partials/verified %>
+  <%}%>
+
+<!-- div class="row">
+    <div class="col-lg-4">
+      
+    </div>
+</div -->
+
+<div class="row">
+      <div class="col-lg-4">
+      <% include partials/loginform%>
+      </div>
+</div>
+<div class="row">
+  <!-- div class="col-lg-4">
+            <!-- fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+            </fb:login-button -->
+            <div id="status">
+            </div>
+      
+            <div class="fb-login-button" scope="public_profile,email,user_photos" data-max-rows="1" data-size="large" data-button-type="continue_with" data-use-continue-as="true">
+            </div>
+
+      </div -->
+</div>
+<div class="row">
+  <div class="col-lg-4">
+    <% include partials/newaccountform %>
+  </div>
+    
+</div>
+
+  <hr>
+
+</div>
+
+<% include partials/footer %>

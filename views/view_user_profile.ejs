@@ -1,0 +1,236 @@
+<% include partials/header%>
+<% include partials/menu%>
+
+<div class="container">
+    <div class="row m-y-2">
+        <div class="col-lg-8 push-lg-4">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a href="" data-target="#profile" data-toggle="tab" class="nav-link active">Profile </a>
+                </li>
+                <li class="nav-item">
+                    <a href="" data-target="#messages" data-toggle="tab" class="nav-link">Messages</a>
+                </li>
+            </ul>
+            <div class="tab-content p-b-3">
+                <div class="tab-pane active" id="profile">
+                    <h4 class="m-y-2">User Profile</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div>
+                                <i class="fas fa-plug">online</i> <br>
+                                <i class="fas fa-sync">Connected</i>
+                            </div>
+                            <% if (user.profile.bio) {%>
+                            <h6>Bio :</h6>
+                            <p>
+                                <%=user.profile.bio %>
+                            </p>
+                            <h6> More About <%=user.first_name + ' ' + user.last_name%> :</h6>
+                            <p>
+                                <p><% if (user.gps_lon) {%>
+                                    <%= user.location.surburb %> <br>
+                                    <%= user.location.city %><br>
+                                    <%=user.location.county %><br>
+                                    <%= user.location.state %><br>
+                                <%} else {%>
+                                <p><%='This user does not share their location' %></p>
+                                <%}%>
+                                
+                                <p>
+                                    <%= user.profile.gender%> <br>
+                                    <%= user.profile.age%> <br>
+                                </p>
+
+                                </p>                            
+                            </p>
+                            <button id="btn_like" class="btn btn-primary" onclick="like('<%=user._id%>','<%=user.first_name%>')">
+
+                                <% var tell = details.liked.includes(''+user._id)%>
+                                <% if (tell) {%>
+                                    <%= 'Unlike'%>
+                                <%} else {%>
+                                    <%='Like' %>
+                                <%}%>
+                        </button>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Recent Tags</h6>
+                            <% user.profile.interests.forEach(function(tag){%>
+                            <span><%=tag %></span>
+                            <%})%>
+                            <hr>
+                            <span class="tag tag-primary"><i class="fa fa-user"></i><small> fame rating :</small><%= user.famerating %></span>
+                            <span class="tag tag-success"><i class="fa fa-heart"></i><small> likes :</small>
+                                <% if (user.likers) {%>
+                                <%= user.likers.length%>
+                                <% } else {%>
+                                <%='0' %>
+                                <% }%>
+                            </span>
+                            
+                            <br>
+                            <div>
+                                <p>preferences :</p>
+                                <% user.profile.preferences.forEach(function(pref){%>
+                                <%= pref %>
+                                <%})%>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h4 class="m-t-2"><span class="fa fa-clock-o ion-clock pull-xs-right"></span> Recent Activity</h4>
+                            
+                            <div style="height:600px; overflow-y: scroll;">
+                                    <table class="table table-hover table-striped">
+                                <tbody> 
+                                <% user.history.forEach((item)=>{%>
+                                <% var history_split =  item.split('|'); %>                       
+                                    <tr>
+                                        <td>
+                                            <% if (history_split[1]) {%>
+                                            viewed profile of <a href="/getuserprofile?user_id=<%=history_split[1]%>"><strong><%=history_split[0] %></strong>
+                                             </a>
+                                             <%} else {%>
+                                             <strong><%=history_split[0] %></strong>
+                                             <%}%>
+
+                                        </td>
+                                    </tr>
+                                     <%})%>
+                                </tbody>
+                            </table>
+   
+                            </div>
+                            <button id="btn_block" class="btn btn-info" onclick="block('<%=user._id%>')">Block</button>
+                            <button id="btn_report" class="btn btn-info" onclick="report('<%=user._id%>')">Report</button>
+                                                       
+                        </div>
+                    </div>
+                    <%}%>
+                    <!--/row-->
+                </div>
+                <div class="tab-pane" id="messages">
+                    <h4 class="m-y-2">Recent Messages &amp; Notifications</h4>
+                    <div class="alert alert-info alert-dismissable">
+                        <a class="panel-close close" data-dismiss="alert">×</a> This is an <strong>.alert</strong>. Use this to show important messages to the user.
+                    </div>
+                    <table class="table table-hover table-striped">
+                        <tbody>                                    
+                            <tr>
+                                <td>
+                                   <span class="pull-xs-right font-weight-bold">3 hrs ago</span> Here is your a link to the latest summary report from the..
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                   <span class="pull-xs-right font-weight-bold">Yesterday</span> There has been a request on your account since that was..
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                   <span class="pull-xs-right font-weight-bold">9/10</span> Porttitor vitae ultrices quis, dapibus id dolor. Morbi venenatis lacinia rhoncus. 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                   <span class="pull-xs-right font-weight-bold">9/4</span> Vestibulum tincidunt ullamcorper eros eget luctus. 
+                                </td>
+                            </tr>
+                        </tbody> 
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 pull-lg-8 text-xs-center">
+            <% if (user.profile.p_pic) {%>
+            <img src="<%=user.profile.p_pic %>" class="mg-fluid img-circle" alt="avatar" height="200" width="200" >
+            <% }%>
+            <% if (user.profile.photos[0]) {%>
+            <img src="<%=user.profile.photos[0] %>" class="img-fluid img-circle" height="250" width="200" alt="avatar" >
+            <% }%>
+            <% if (user.profile.photos[1]) {%>
+            <img src="<%=user.profile.photos[1] %>" class="mg-fluid img-circle" alt="avatar" height="200" width="200" >
+            <% }%>
+        </div>
+    </div>
+</div>
+<hr>
+<% include partials/footer%>
+<script type="text/javascript">
+    function block(id) {
+
+           console.log(id);
+
+           var xhttp = new XMLHttpRequest();
+
+           xhttp.onreadystatechange = function() {
+                 if (this.readyState == 4 && this.status == 200) {
+                    
+                    document.getElementById('btn_block').innerHTML = 'User Blocked';
+                    console.log('blocked :' + this.responseText);
+                 }
+           }
+
+           xhttp.open("POST", "/block", true);
+           xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+           xhttp.send("id="+id);
+
+    }
+
+    function like (id,name) {
+        console.log(id);
+        console.log(name);
+
+        var xhttp = new XMLHttpRequest();
+
+        if (document.getElementById('btn_block').innerHTML == 'Like') {
+
+           xhttp.onreadystatechange = function() {
+                 if (this.readyState == 4 && this.status == 200) {
+                    
+                    document.getElementById('btn_block').innerHTML = 'Unlike';
+                   
+                 }
+           }
+
+           xhttp.open("POST", "/like", true);
+           xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+           xhttp.send("id="+id + "&name="+name);
+
+        } else {
+            xhttp.onreadystatechange = function() {
+                 if (this.readyState == 4 && this.status == 200) {
+                    
+                    document.getElementById('btn_block').innerHTML = 'Like';
+                   
+                 }
+           }
+
+           xhttp.open("POST", "/unlike", true);
+           xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+           xhttp.send("id="+id);
+        }
+
+        
+    }
+
+    function report(id) {
+
+           console.log(id);
+
+           var xhttp = new XMLHttpRequest();
+
+           xhttp.onreadystatechange = function() {
+                 if (this.readyState == 4 && this.status == 200) {
+                    
+                    document.getElementById('btn_report').innerHTML = 'User Reported';
+                     console.log('reported :' + this.responseText);
+                 }
+           }
+
+           xhttp.open("POST", "/report", true);
+           xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+           xhttp.send("id="+id);
+
+    }
+</script>
