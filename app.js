@@ -557,6 +557,13 @@ app.post('/unlike', function(req, res){
     
   		});
 
+	var i = 0;
+	req.session.liked.forEach((id)=>{
+		if (id == req.body.id) {
+			req.session.liked.splice(i,1);
+		}
+		i++;
+	});
 
 	res.send('unliked');
 	res.end();
@@ -1182,6 +1189,9 @@ app.post('/users/add', function(req, res_main){
 						'password':hash,
 						'token': abc,
 						'verified' : 'false',
+						'liked' : [null],
+						'likers' : [null],
+						'blocked' : [null],
 						'profile' : 
 							{
 							'gender' : null,

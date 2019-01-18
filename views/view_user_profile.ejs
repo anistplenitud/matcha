@@ -44,15 +44,12 @@
 
                                 </p>                            
                             </p>
-                            <button id="btn_like" class="btn btn-primary" onclick="like('<%=user._id%>','<%=user.first_name%>')">
-
-                                <% var tell = details.liked.includes(''+user._id)%>
-                                <% if (tell) {%>
-                                    <%= 'Unlike'%>
-                                <%} else {%>
-                                    <%='Like' %>
-                                <%}%>
-                        </button>
+                            <% if (details.liked) {%>
+                            <% var tell = details.liked.includes(''+user._id)%>
+                            <%} else {%>
+                            <% var tell = null %>
+                            <% }%>                           
+                            <button id="btn_like" class="btn btn-primary" onclick="like('<%=user._id%>','<%=user.first_name%>')"><% if (tell) {%><%= 'Unlike'%><%} else {%><%='Like' %><%}%></button>
                         </div>
                         <div class="col-md-6">
                             <h6>Recent Tags</h6>
@@ -180,15 +177,18 @@
     function like (id,name) {
         console.log(id);
         console.log(name);
+        console.log(document.getElementById('btn_like').innerHTML);
+        alert(document.getElementById('btn_like').innerHTML);
 
         var xhttp = new XMLHttpRequest();
 
-        if (document.getElementById('btn_block').innerHTML == 'Like') {
+        if (document.getElementById('btn_like').innerHTML == 'Like') {
 
            xhttp.onreadystatechange = function() {
                  if (this.readyState == 4 && this.status == 200) {
                     
-                    document.getElementById('btn_block').innerHTML = 'Unlike';
+                    document.getElementById('btn_like').innerHTML = 'Unlike';
+                    alert('You liked');
                    
                  }
            }
@@ -201,7 +201,8 @@
             xhttp.onreadystatechange = function() {
                  if (this.readyState == 4 && this.status == 200) {
                     
-                    document.getElementById('btn_block').innerHTML = 'Like';
+                    document.getElementById('btn_like').innerHTML = 'Like';
+                    alert('You unliked');
                    
                  }
            }
