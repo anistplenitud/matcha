@@ -178,7 +178,7 @@
         console.log(id);
         console.log(name);
         console.log(document.getElementById('btn_like').innerHTML);
-        alert(document.getElementById('btn_like').innerHTML);
+     //   alert(document.getElementById('btn_like').innerHTML);
 
         var xhttp = new XMLHttpRequest();
 
@@ -188,7 +188,7 @@
                  if (this.readyState == 4 && this.status == 200) {
                     
                     document.getElementById('btn_like').innerHTML = 'Unlike';
-                    alert('You liked');
+            //        alert('You liked');
                    
                  }
            }
@@ -202,7 +202,7 @@
                  if (this.readyState == 4 && this.status == 200) {
                     
                     document.getElementById('btn_like').innerHTML = 'Like';
-                    alert('You unliked');
+               //     alert('You unliked');
                    
                  }
            }

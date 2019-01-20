@@ -3,7 +3,7 @@
 
 <div id="header" class="container-fluid">
 	<div class="row">
-		<div class="col-sm-4">
+		<div class="col-sm-3">
 			<% if (users) {%>
   			<% users.forEach(function (user){%>
   			<div class="card" style="width:200px">
@@ -31,10 +31,10 @@
   			<%})%>
   			<%}%>
 		</div>
-		<div class="col-md-4">
-		<form method="post" action="/filter">
+		<div class="col-md-3">
+		<form method="post" action="/search">
 			<div>
-				<p>Filter By :</p>
+				<p>Search By :</p>
 			<label>Age</label>
 				<select class="form-control" name="age">
 					<option>18 - 25</option>
@@ -55,7 +55,7 @@
 			<label for="interests"> Interests : (e.g #matcha #javascript #love...)</label>
       <% if (details.profile.interests) {%>
   
-    <textarea name="interests" id="interests" class="form-control" placeholder="what are your interests? preceed each with '#' e.g #matcha"><% details.profile.interests.forEach(function (inters){%><%= '#'+inters+' ' %><%})%></textarea>
+    <textarea name="interests" id="interests" class="form-control" placeholder="what are your interests? preceed each with '#' e.g #matcha"><% details.profile.interests.forEach(function (inters){ if (inters.length > 1) {%><%= '#'+inters+' ' %><%}})%></textarea>
 
   <%} else {%>
       <textarea name="interests" id="interests" class="form-control" placeholder="what are your interests? preceed each with '#' e.g #matcha"><%='' %></textarea>
@@ -65,7 +65,60 @@
 				<input class="form-control" type="number" name="famerating" min="1" value="1">
 			</div>
 			<br>
-			<button type="submit" class="form-control"  name="sumbit">Filter </button>
+			<button type="submit" class="form-control"  name="sumbit">Search </button>
+		</form>	
+		</div>
+
+
+		<div class="col-md-3">
+		<form method="post" action="/filter">
+			<div>
+				<p>Filter By :</p>
+			<label>Age</label>
+				<select class="form-control" name="age">
+					<option value="">Select Age Group</option>
+					<option>18 - 25</option>
+					<option>25 - 35</option>
+					<option>35 -> </option>
+				</select>
+			<br>
+			<label>Location : </label>
+			<% if (users) {%>
+			<% var locations = [];%>
+			<% var tags = [];%>
+				<select class="form-control" name="location" >
+					<option value="">Select location</option>
+				<% users.forEach((user)=>{%>
+						<% if (!locations.includes(user.ipapi.city)) {%>
+						<% locations.push(user.ipapi.city);%>
+						<%}%>
+						<% user.profile.interests.forEach((interest)=>{%>
+							<% if (!tags.includes(interest)) {%>
+							<% tags.push(interest)%>
+							<%}%>
+						<%});%>
+				<% });%>
+				<% locations.forEach((loc)=>{%>	
+						<option><%= loc %></option>
+						<%});%>
+				</select>
+			
+			<label for="interests"> Interests : (e.g #matcha #javascript #love...)</label>
+
+      <% if (tags) {%>
+  
+    <textarea name="interests" class="form-control" placeholder="what are your interests? preceed each with '#' e.g #matcha"><% tags.forEach(function (tag){ if (tag.length > 1) {%><%= '#'+tag+' ' %><%}});%></textarea>
+
+  <%} else {%>
+      <textarea name="interests" id="interests" class="form-control" placeholder="common tags '#' e.g #matcha"><%='' %></textarea>
+ 		 <%}%>
+  <% }%>
+			<br>
+			<label>fame rating (greater than or equals):</label>
+				<input class="form-control" type="number" name="famerating" min="1" value="1">
+			</div>
+			<br>
+			<button type="submit" class="form-control"  name="sumbit">Filter</button>
 		</form>	
 		</div>
 	</div>

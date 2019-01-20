@@ -467,6 +467,16 @@ app.post('/ipapi', function(req, res) {
   	req.session.ipapi.country = req.body.country;
   	req.session.ipapi.region =	req.body.region;
 
+  	console.log('postal :' + req.session.ipapi.postal);
+  	console.log('city :' + req.session.ipapi.city);
+  	console.log('country :' + req.session.ipapi.country);
+  	console.log('region :'+req.session.ipapi.region);
+
+  	res.render('home', {
+			title : 'foster',
+			details : req.session
+	});
+
 });
 
 app.post('/report', function(req, res){
@@ -756,6 +766,102 @@ app.get('/home', function(req, res) {
 
 });
 
+app.post('/filter', function(req, res) {
+
+		console.log(req.body.famerating);
+		console.log(req.body.interests);
+		console.log(req.body.location);
+		console.log(req.body.age);
+
+		var common_tags = [];
+		var famerating = req.body.famerating;
+
+		var minAge = 18;
+		var maxAge = 100;
+
+		if (req.body.age == '18 - 25') {
+
+			 minAge = 18;
+			 maxAge = 25;
+		}
+		else if (req.body.age == '25 - 35') {
+			 minAge = 25;
+			 maxAge = 35;	
+		}
+		else if (req.body.age == '35 ->'){
+			 minAge = 35;
+			 maxAge = 100;
+		}
+
+		console.log(minAge +'|'+ maxAge);
+
+		if (req.body.interests) {
+			req.body.interests.split('#').forEach((tag)=>{
+				if (tag.trim().length > 1) {
+					common_tags.push(tag.trim());
+				}
+			});
+		} else {
+			common_tags.push('');
+		}
+
+		var filtered = [];
+
+		console.log(common_tags);
+
+		req.session.results.forEach((user)=>{
+
+		console.log(check_tags(user.profile.interests, common_tags));
+
+			if (user.famerating >= famerating
+				&& check_tags(user.profile.interests, common_tags) 
+				&& user.profile.age >= minAge 
+				&& user.profile.age <= maxAge
+				&& check_location(req.body.location ,user.ipapi.city)
+				) {
+
+					filtered.push(user);
+			}
+		});
+
+		console.log('filter :'+filtered);
+
+		result = filtered;
+		req.session.results = result;
+
+		res.render('browse', {
+
+				title : 'foster',
+				myconfig : config,
+				details : req.session,
+				users : result
+		});
+
+});
+
+function check_tags(a, b) {
+	
+	var r = null;
+	a.some((interest)=>{
+			if (b.includes(interest)) {
+				r = true;
+			}
+	});
+	return r;	
+}
+
+function check_location(a, b) {
+	if (a) {
+		if (a == b) {
+			return true
+		}
+		else
+			return null;
+	}
+	else
+		return true
+}
+
 
 app.get('/browse', function(req, res) {
 
@@ -765,8 +871,33 @@ app.get('/browse', function(req, res) {
 	}
 	else
 	{
-		dbmatcha.collection("Users").find({'email':{$ne : req.session.email}}).toArray(
+		var minAge = req.session.profile.age - 10;
+		var maxAge = req.session.profile.age + 10;
+
+		dbmatcha.collection("Users").find(
+			{
+	    		$and :
+	    		[
+	    			{'email':{$ne : req.session.email}},
+	        		{'famerating': {$gte : Number(req.body.famerating) - 100}},
+	        		{'profile.interests': {$in : req.session.profile.interests }},
+	        		{'profile.age': {$gte: minAge }},
+	        		{'profile.age': {$lte: maxAge }},
+	        		{'profile.gender':{$in : req.session.profile.preferences}},
+	        		{
+	        			$or :
+	        			[
+	        				{'ipapi.city' : req.session.ipapi.city},
+	        				{'ipapi.country' : req.session.ipapi.country},
+	        				{'ipapi.region' : req.session.ipapi.region}
+	        			]
+	        		}
+	    		]
+			}
+			).limit(50).toArray(
 			function(err, result) {
+
+			req.session.results = result;
 
 				res.render('browse', {
 
@@ -780,7 +911,16 @@ app.get('/browse', function(req, res) {
 	
 });
 
-app.post('/filter', function(req, res) {
+app.post('/search', function(req, res) {
+	var city = req.session.ipapi.city;
+	var country  = req.session.ipapi.country;
+	var region   = req.session.ipapi.region;
+
+	if (req.body.location) {
+		city = req.body.location;
+		country = req.body.location;
+		region = req.body.location;
+	}
 
 
 	if (!req.session.email) {
@@ -802,17 +942,10 @@ app.post('/filter', function(req, res) {
 			 minAge = 25;
 			 maxAge = 35;	
 		}
-		else{
+		else if (req.body.age == '35 ->'){
 			 minAge = 35;
 			 maxAge = 100;
 		}
-
-		console.log('min :' + minAge + '|' + 'max' + maxAge+'<br>');
-
-	console.log('Age :'+req.body.age);
-	console.log('location :'+req.body.location);
-	console.log('famerating :'+req.body.famerating);
-	console.log('interests :'+req.body.interests);
 
 	var list = req.body.interests.split('#');
 
@@ -841,21 +974,24 @@ app.post('/filter', function(req, res) {
 	    		[
 	    			{'email':{$ne : req.session.email}},
 	        		{'famerating': {$gte : Number(req.body.famerating)}},
-	        		{'profile.interests': {$all : interests }},
+	        		{'profile.interests': {$in : interests }},
 	        		{'profile.age': {$gte: minAge }},
 	        		{'profile.age': {$lte: maxAge }},
+	        		{'profile.gender':{$in : req.session.profile.preferences}},
 	        		{
 	        			$or :
 	        			[
-	        				{'ipapi.city' : req.body.location},
-	        				{'ipapi.country' : req.body.location},
-	        				{'ipapi.region' : req.body.location}
+	        				{'ipapi.city' : city},
+	        				{'ipapi.country' : country},
+	        				{'ipapi.region' : region}
 	        			]
 	        		}
 	    		]
 			}
-		).toArray(
+		).limit(50).toArray(
 			function(err, result) {
+
+			req.session.results = result;
 
 				res.render('browse', {
 
