@@ -3,7 +3,8 @@
 
 <div id="header" class="container-fluid">
 	<div class="row">
-		<div class="col-sm-3">
+		<div class="col-lg-3">
+
 			<% if (users) {%>
   			<% users.forEach(function (user){%>
   			<div class="card" style="width:200px">
@@ -121,6 +122,51 @@
 			<button type="submit" class="form-control"  name="sumbit">Filter</button>
 		</form>	
 		</div>
+
+		<div class="col-md-3">
+			<div class="col-md-12">
+		<form method="post" action="/sort">
+			<div>
+				<p>Sort By :</p>
+				<input type="radio" class="form-check-input" name="optradio" value="age" checked>Age
+				<label><small><i>ascending</i></small></label>
+
+			<br>
+			<input type="radio" class="form-check-input" name="optradio" value="location">Location
+			<label><small><i>closest</i></small></label>
+			<% if (users) {%>
+			<% var tags = [];%>
+		
+				<% users.forEach((user)=>{%>
+						<% user.profile.interests.forEach((interest)=>{%>
+							<% if (!tags.includes(interest)) {%>
+							<% tags.push(interest)%>
+							<%}%>
+						<%});%>
+				<% });%>
+				<br>
+			<input type="radio" class="form-check-input" name="optradio" value="tags">Tags
+			<label><small><i>prioritize</i></small></label>
+
+      <% if (tags) {%>
+  
+    <textarea name="interests" class="form-control" placeholder="what are your interests? preceed each with '#' e.g #matcha"><% tags.forEach(function (tag){ if (tag.length > 1) {%><%= '#'+tag+' ' %><%}});%></textarea>
+
+  <%} else {%>
+      <textarea name="interests" id="interests" class="form-control" placeholder="common tags '#' e.g #matcha"><%='' %></textarea>
+ 		 <%}%>
+  <% }%>
+			<br>
+			<input type="radio" class="form-check-input" name="optradio" value="famerating">Fame Rating <br>
+			<label><small><i>descending</i></small></label>
+			
+			</div>
+			<br>
+			<button type="submit" class="form-control"  name="sumbit">Sort</button>
+		</form>	
+	</div>
+		</div>
+
 	</div>
 </div>
 

@@ -701,15 +701,23 @@ app.post('/profile', function(req, res) {
 			function(erro, resu) {
     				if (erro) throw erro;
     					console.log("profile updated for "+req.session.email);
+
+    				req.session.profile.interests = interests;
+					req.session.profile.age = req.body.age;
+					req.session.profile.bio = req.body.bio;
+					req.session.profile.preferences = prefs;
+					req.session.profile.gender = req.body.gender;
+
+					res.send("OK");
+
   			});	
 
-		req.session.profile.interests = interests;
-		req.session.profile.age = req.body.age;
-		req.session.profile.bio = req.body.bio;
-		req.session.profile.preferences = prefs;
-		req.session.profile.gender = req.body.gender;
-
-		res.send("OK");
+		
+	/*	res.render('profile', {
+					title : 'foster',
+					errors : email_error,
+					details : req.session
+				}); */
 	}
 });
 
@@ -762,6 +770,135 @@ app.get('/home', function(req, res) {
 		details = null;
 		res.redirect('/');
 		res.end();
+	}
+
+});
+
+
+app.post('/sort', function(req, res) {
+
+	console.log(req.body.optradio);
+
+	if (!req.session.email) {
+		res.redirect('/');
+		res.end();	
+	}
+	else
+	{
+
+		var common_tags = [];
+		var sorted = [];
+
+		if (req.body.optradio == 'tags') {
+
+			if (req.body.interests) {
+				req.body.interests.split('#').forEach((tag)=>{
+					if (tag.trim().length > 1) {
+						common_tags.push(tag.trim());
+					}
+				});
+			} else {
+				common_tags.push('');
+			}
+
+			req.session.results.forEach((user) => {
+				if (check_tags(user.profile.interests, common_tags)) {
+					sorted.push(user);
+				} 
+			});
+
+			req.session.results.forEach((user) => {
+				if (!sorted.includes(user)) {
+					sorted.push(user);
+				} 
+			});			
+			console.log(common_tags);
+		}
+		else if (req.body.optradio == 'age') {
+			var dup_res = req.session.results;
+			var all_ages = [];
+			var i = 0;
+
+			req.session.results.forEach((user) => {
+				all_ages.push(user.profile.age);
+			});
+
+			all_ages.sort(function(a, b){return a-b});
+
+			console.log(all_ages);
+
+			while (all_ages.length > 0) {
+				console.log(all_ages);
+				i = 0;
+
+				while (i < all_ages.length) {
+					if (all_ages[0] == dup_res[i].profile.age) {
+						sorted.push(dup_res[i]);
+						dup_res.splice(i,1);
+						console.log('got one');
+						break;
+					}
+					i++;
+				}
+				
+				all_ages.shift();
+			}
+
+			req.session.results = sorted;
+
+		}
+		else if (req.body.optradio == 'location') {
+
+			req.session.results.forEach((user) => {
+				if (check_location(user.ipapi.city, req.session.ipapi.city)) {
+					sorted.push(user);
+				}
+			});
+
+			req.session.results.forEach((user) => {
+				if (!sorted.includes(user)) {
+					sorted.push(user);
+				} 
+			});
+		}
+		else if (req.body.optradio == 'famerating') {
+			var dup_res = req.session.results;
+			var all_ratings = [];
+			var i = 0;
+
+			req.session.results.forEach((user) => {
+				all_ratings.push(user.famerating);
+			});
+
+			all_ratings.sort(function(a, b){return b-a});
+			console.log(all_ratings);
+
+			while (all_ratings.length > 0) {
+				console.log(all_ratings);
+				i = 0;
+				while (i < all_ratings.length) {
+					if (all_ratings[0] == dup_res[i].famerating) {
+						sorted.push(dup_res[i]);
+						dup_res.splice(i,1);
+						break;
+					}
+					i++;
+				}
+				all_ratings.shift();
+			}
+			
+			req.session.results = sorted;	
+		}
+		
+		console.log('sort :'+ sorted);
+
+		res.render('browse', {
+
+				title : 'foster',
+				myconfig : config,
+				details : req.session,
+				users : sorted
+		});
 	}
 
 });
@@ -839,6 +976,7 @@ app.post('/filter', function(req, res) {
 
 });
 
+
 function check_tags(a, b) {
 	
 	var r = null;
@@ -879,7 +1017,7 @@ app.get('/browse', function(req, res) {
 	    		$and :
 	    		[
 	    			{'email':{$ne : req.session.email}},
-	        		{'famerating': {$gte : Number(req.body.famerating) - 100}},
+	        		{'famerating': {$lte : Number(req.session.famerating) + 200}},
 	        		{'profile.interests': {$in : req.session.profile.interests }},
 	        		{'profile.age': {$gte: minAge }},
 	        		{'profile.age': {$lte: maxAge }},
@@ -1080,6 +1218,7 @@ app.post('/login', function(req, res) {
     			}
     			else
     			{
+    				req.session._id = result._id;
 	    			req.session.email = result.email;
 	    			req.session.password = result.password;
 	    			req.session.first_name = result.first_name;

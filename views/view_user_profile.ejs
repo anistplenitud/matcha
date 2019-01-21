@@ -48,8 +48,11 @@
                             <% var tell = details.liked.includes(''+user._id)%>
                             <%} else {%>
                             <% var tell = null %>
-                            <% }%>                           
+                            <% }%>
+                            <% if ((details.profile.p_pic || details.profile.photos[0] || details.profile.photos[1]) && (!user.blocked.includes(details._id))) {%>  
+                            <%=details._id +' here' %>                  
                             <button id="btn_like" class="btn btn-primary" onclick="like('<%=user._id%>','<%=user.first_name%>')"><% if (tell) {%><%= 'Unlike'%><%} else {%><%='Like' %><%}%></button>
+                            <%}%>
                         </div>
                         <div class="col-md-6">
                             <h6>Recent Tags</h6>
