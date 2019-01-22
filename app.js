@@ -479,6 +479,23 @@ app.post('/ipapi', function(req, res) {
 
 });
 
+app.get('/history', function(req, res){
+
+	console.log(req.session.email);
+
+	if (req.session.email) {
+		res.render('history', {
+			title : 'foster',
+			details : req.session
+		});
+	}
+	else
+	{
+		res.redirect('/');
+	}
+
+});
+
 app.post('/report', function(req, res){
 	console.log(req.body.id);
 
@@ -501,8 +518,6 @@ app.post('/report', function(req, res){
 
 });
 
-
-
 app.post('/like', function(req, res){
 	console.log(req.body.id);
 
@@ -516,7 +531,7 @@ app.post('/like', function(req, res){
 
   	dbmatcha.collection("Users").updateOne(
   		{ _id: ObjectId(req.body.id)},
-  		{$push:{'likers' : req.body.id}},
+  		{$push:{'likers' : req.session._id +'|'+req.session.user_name}},
   		function(erro, resu) {
   			if (erro) throw erro;
   				console.log("likers appended for "+ req.body.id+" liked by "+req.session.email);	 
@@ -603,6 +618,14 @@ app.post('/viewprofile', function(req, res){
     
   		});
 
+  	dbmatcha.collection("Users").updateOne(
+		{ _id: ObjectId(req.body.id)},
+		{$push:{'viewers': req.session._id+'|'+req.session.user_name}},
+		function(erro, resu) {
+    		if (erro) throw erro;
+    			console.log("viewers updated");
+    
+  		});
 	res.send('view recorded');
 	res.end();
 
@@ -626,8 +649,8 @@ app.post('/block', function(req, res){
 
 app.post('/profile', function(req, res) {
 
-
-	var errors = [];
+	if (req.session.email) {
+		var errors = [];
 	var prefs = [];
 	var interests = [''];
 
@@ -708,17 +731,20 @@ app.post('/profile', function(req, res) {
 					req.session.profile.preferences = prefs;
 					req.session.profile.gender = req.body.gender;
 
+					res.locals.session = req.session;
 					res.send("OK");
 
-  			});	
 
-		
-	/*	res.render('profile', {
-					title : 'foster',
-					errors : email_error,
-					details : req.session
-				}); */
+  			});	
+				
+		}
+			
 	}
+	else
+	{
+		res.redirect('/');
+	}
+	
 });
 
 function checkinterests(text) {
@@ -1009,8 +1035,17 @@ app.get('/browse', function(req, res) {
 	}
 	else
 	{
-		var minAge = req.session.profile.age - 10;
-		var maxAge = req.session.profile.age + 10;
+		var minAge = Number(req.session.profile.age) - 10;
+		var maxAge = Number(req.session.profile.age) + 10;
+
+		console.log('min'+minAge);
+		console.log('max'+maxAge);
+		console.log(req.session.email);
+		console.log(req.session.famerating);
+		console.log(req.session.profile.interests);
+		console.log(req.session.profile.preferences);
+		console.log(req.session.ipapi.city);
+		console.log(req.session.ipapi.region);
 
 		dbmatcha.collection("Users").find(
 			{
@@ -1221,6 +1256,7 @@ app.post('/login', function(req, res) {
     				req.session._id = result._id;
 	    			req.session.email = result.email;
 	    			req.session.password = result.password;
+	    			req.session.user_name = result.user_name;
 	    			req.session.first_name = result.first_name;
 	    			req.session.last_name = result.last_name;
 	    			req.session.verified = result.verified;
@@ -1232,6 +1268,7 @@ app.post('/login', function(req, res) {
 	    			req.session.history = result.history;
 	    			req.session.liked = result.liked;
 	    			req.session.likers = result.likers;
+	    			req.session.viewers = result.viewers;
 	    			req.session.blocked = result.blocked;
 
 	    			if (!result.famerating)
@@ -1280,8 +1317,10 @@ app.post('/modifyaccount', function(req, res){
 	console.log('pass_v :'+req.body.password_v);
 	
 	var errors = [];
-
-	if (!req.body.first_name) {
+	if (!req.body.user_name) {
+		errors.push({'msg':'User name is Required'});
+	}
+	else if (!req.body.first_name) {
 		errors.push({'msg':'First name is Required'});
 	}
 	else if (!req.body.last_name) {
@@ -1397,8 +1436,10 @@ app.post('/users/add', function(req, res_main){
 	var abc = randomstring.generate();
 
 	var errors = [];
-
-	if (!req.body.first_name) {
+	if (!req.body.user_name) {
+		errors.push({'msg':'User name is Required'});
+	}
+	else if (!req.body.first_name) {
 		errors.push({'msg':'First name is Required'});
 	}
 	else if (!req.body.last_name) {
@@ -1453,11 +1494,12 @@ app.post('/users/add', function(req, res_main){
 			}
 			else {
 				/////////////////////
-				console.log('plan');
+				//console.log('plan');
 				bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
 				
 					dbmatcha.collection("Users").insertOne(
 					{
+						'user_name' : req.body.user_name,
 						'first_name' : req.body.first_name,
 						'last_name' : req.body.last_name,
 						'email' : req.body.email,
@@ -1466,6 +1508,7 @@ app.post('/users/add', function(req, res_main){
 						'verified' : 'false',
 						'liked' : [null],
 						'likers' : [null],
+						'viewers' : [null],
 						'blocked' : [null],
 						'profile' : 
 							{

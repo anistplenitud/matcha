@@ -20,7 +20,12 @@
         
         <!-- Modal body -->
         <div class="modal-body">
-          <form action="/users/add" method="POST" onsubmit="return validateForm()">
+          <form action="/users/add" method="POST">
+
+           <div class="form-group">
+            <label for="user_name">Username:</label>
+            <input type="text" class="form-control" id="user_name" name="user_name" autocomplete required>
+          </div>
 
           <div class="form-group">
             <label for="first_name">First Name:</label>

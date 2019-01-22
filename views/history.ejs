@@ -1,0 +1,73 @@
+<% include partials/header%>
+<% include partials/menu%>
+
+<div class="container">
+    <div class="row m-y-2">
+        <div class="col-lg-8 push-lg-4">
+     
+            <div class="tab-content p-b-3">
+                <div class="tab-pane active" id="profile">
+                    
+                    <div class="row">
+                        
+                      
+                        <div class="col-md-12">
+                            <h4 class="m-t-2"><span class="fa fa-clock-o ion-clock pull-xs-right"></span>Like History</h4>
+                           
+                            <table class="table table-hover table-striped">
+                                <tbody>                                    
+                                    <tr>
+                                        <% details.likers.forEach((liker)=>{%>
+                                        <% if (liker) {%>
+                                        <% var lyk = liker.split('|');%>
+                                        <td>
+                                            liked by<a href="/getuserprofile?user_id=<%=lyk[0] %>"><strong><%=lyk[1] %></strong></a>
+                                            
+                                            
+                                        </td>
+                                        <%}});%>
+                                    </tr>
+                                    
+                                    
+                                </tbody>
+                            </table>
+                        
+                        </div>
+                    </div>
+                    <!--/row-->
+                    <div class="row">
+                        
+                      
+                        <div class="col-md-12">
+                            <h4 class="m-t-2"><span class="fa fa-clock-o ion-clock pull-xs-right"></span>View History</h4>
+                           
+                            <table class="table table-hover table-striped">
+                                <tbody>                                    
+                                    <tr>
+                                        <% details.viewers.forEach((viewer)=>{%>
+                                        <% if (viewer) {%>
+                                        <% var lyk = viewer.split('|');%>
+                                        <td>
+                                            Viewd by<a href="/getuserprofile?user_id=<%=lyk[0] %>"><strong><%=lyk[1] %></strong></a>
+                                            
+                                            
+                                        </td>
+                                        <%}});%>
+                                    </tr>
+                                    
+                                    
+                                </tbody>
+                            </table>
+                        
+                        </div>
+                    </div>
+                    <!--/row-->
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</div>
+<hr>
+<% include partials/footer%>

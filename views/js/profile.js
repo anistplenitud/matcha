@@ -48,7 +48,7 @@ function showPosition(position) {
          +"<br>We have recorded that. ";
 
          xhttp.open("POST", "/coords", true);
-         console.log(response.address);
+  //       console.log(response.address);
          xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
          xhttp.send("lat="+position.coords.latitude 
       +"&lon="+position.coords.longitude

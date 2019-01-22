@@ -17,7 +17,11 @@
     </ul>
   <%} %>
 			<form action="/modifyaccount" method="POST" onsubmit="return true;// validateForm()">
-				<label for="first_name">First Name:<%= details.first_name %></label>
+				    
+              <label for="user_name">User Name:<%= details.user_name %></label>
+              <input type="text" class="form-control" id="user_name" name="user_name" autocomplete required>
+
+              <label for="first_name">First Name:<%= details.first_name %></label>
             	<input type="text" class="form-control" id="first_name" name="first_name" autocomplete required>
             	<label for="first_name">Last Name:<%= details.last_name %></label>
             	<input type="text" class="form-control" id="last_name" name="last_name" autocomplete required>
