@@ -19,7 +19,14 @@
                         <div class="col-md-6">
                             <div>
                                 <i class="fas fa-plug">online</i> <br>
-                                <i class="fas fa-sync">Connected</i>
+                            <% var status = 'Not Connected';%>
+                            <% if (user.liked && details.liked) {%>
+                                <% if (user.liked.includes(details._id) && details.liked.includes(user._id)) {%>
+                                    <% status = 'Connected';%>
+                                <%}%>
+                            <% }%>
+                                <i class="fas fa-sync"><%=status %></i>
+
                             </div>
                             <% if (user.profile.bio) {%>
                             <h6>Bio :</h6>
@@ -49,7 +56,13 @@
                             <%} else {%>
                             <% var tell = null %>
                             <% }%>
-                            <% if ((details.profile.p_pic || details.profile.photos[0] || details.profile.photos[1]) && (!user.blocked.includes(details._id))) {%>  
+                            <% if (user.blocked) {%>
+
+                            <% var tellagain = !user.blocked.includes(details._id);%>
+                            <%} else {%>
+                            <% var tellagain = 1;%>
+                            <%} %>
+                            <% if ((details.profile.p_pic || details.profile.photos[0] || details.profile.photos[1]) && (tellagain)) {%>  
                             <%=details._id +' here' %>                  
                             <button id="btn_like" class="btn btn-primary" onclick="like('<%=user._id%>','<%=user.first_name%>')"><% if (tell) {%><%= 'Unlike'%><%} else {%><%='Like' %><%}%></button>
                             <%}%>

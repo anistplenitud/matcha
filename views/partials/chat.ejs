@@ -1,0 +1,30 @@
+<div>
+<h2>WS Example</h2>
+<p id="output"></p>
+<!-- SocketIO Client library -->
+<!-- script src="https://localhost:3000/socket.io/socket.io.js"></script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+
+<script type="application/javascript">
+/* Our client side code will go here */
+var socket = io.connect('http://localhost:8080');
+
+output = document.getElementById('output');
+
+console.log('io');
+
+console.log(socket)
+
+socket.emit('connection', this.text)
+
+output.innerHTML = 'io not working';
+
+socket.on('connection', function(){
+	console.log('connected');
+	output.innerHTML = 'io  working';
+
+});
+console.log('io');
+
+</script>
+</div>

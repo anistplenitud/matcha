@@ -6,3 +6,23 @@
 </footer>	
 </body>
 </html>
+<!-- SocketIO Client library -->
+<!-- script src="https://localhost:3000/socket.io/socket.io.js"></script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+
+<script type="application/javascript">
+/* Our client side code will go here */
+var socket = io.connect('http://localhost:8080');
+
+output = document.getElementById('output');
+
+console.log('io');
+
+socket.emit('connection', this.text)
+
+socket.on('connection', function(){
+	console.log('connected');
+});
+console.log('io');
+
+</script>

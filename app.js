@@ -7,7 +7,11 @@ var mongo = require('mongodb');
 var assert = require('assert');
 
 const https = require('https');
+var http = require('http');
+var IOServer = require('socket.io');
+
 const fs = require('fs');
+
 
 var bodyParser = require('body-parser');
 
@@ -47,6 +51,7 @@ app.use(fileUpload());
 console.log(config);
 
 var dbmatcha;
+
 
 mongo.MongoClient.connect(url,{ useNewUrlParser: true } , function(err, db){
 	if (err) throw err;
@@ -109,6 +114,8 @@ var transporter = nodemailer.createTransport({
     		pass: config.mailtransporter.pass
   		}
 });
+
+
 
 app.get('/', function(req, res) {
 	res.render('index', {
@@ -1052,6 +1059,7 @@ app.get('/browse', function(req, res) {
 	    		$and :
 	    		[
 	    			{'email':{$ne : req.session.email}},
+	    			{'_id' : {$nin : req.session.blocked}},
 	        		{'famerating': {$lte : Number(req.session.famerating) + 200}},
 	        		{'profile.interests': {$in : req.session.profile.interests }},
 	        		{'profile.age': {$gte: minAge }},
@@ -1132,20 +1140,12 @@ app.post('/search', function(req, res) {
 		interests.push('');
 	}
 
-/*	{
-    $and : [
-    	{'email':{$ne : req.session.email}},
-        {'famerating':{$gte : req.body.famerating}},
-        {'profile.interests': {$all : interests}}
-    ]
-	}
-*/
-
 	dbmatcha.collection("Users").find(
 			{
 	    		$and :
 	    		[
 	    			{'email':{$ne : req.session.email}},
+	    			{'_id' : {$nin : req.session.blocked}},
 	        		{'famerating': {$gte : Number(req.body.famerating)}},
 	        		{'profile.interests': {$in : interests }},
 	        		{'profile.age': {$gte: minAge }},
@@ -1608,15 +1608,36 @@ const httpsOptions = {
 	cert : fs.readFileSync('./cert.pem')
 }
 
-const server = https.createServer(httpsOptions, app).listen(3000, ()=> {
+const server = https.createServer(httpsOptions, app);
+
+var io = new IOServer(server);
+
+io.on('connection', (socket)=>{
+	console.log('New Connection');
+});
+
+server.listen(3000, ()=> {
 	console.log('https server running');
 });
 
+var hserver = http.createServer(handler);
+hserver.listen(8080);
+
+function handler( request, response ) {
+var index = fs.readFileSync( './views/partials/chat.ejs' );
+index = index.toString( );
+response.writeHead(200, {
+'Content-Type': 'text/html',
+'Content-Length': Buffer.byteLength( index )
+});
+response.end( index );
+}
 
 
+var hio = new IOServer(hserver);
 
-
-
-
-
-
+hio.on('connection', (socket)=>{
+	console.log('New Connection');
+	socket.emit('request', /* */); 
+});
+				
